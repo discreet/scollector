@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/discreet/scollector.svg?branch=puppet-4)](https://travis-ci.org/discreet/scollector)
+
 # scollector
 
 #### Table of Contents
@@ -106,85 +108,137 @@ scollector::custom_collector:
 
 `use_hiera`  
 If Hiera data should be used to create external collectors  
-Type: boolean
+Type: boolean  
+Default: false  
 *required*
 
 `version`  
 The version of Scollector to install on the node  
-Type: string
-Default: false
+Type: string  
+Default: undef  
 *required*
 
 `host`  
 The host to have Scollector send metrics to  
-Type: string
-Default: undef
+Type: string  
+Default: undef  
 *required*
 
 `port`  
 The port for Scollector to use to connect to the host  
-Type: string
-Default: 8090
+Type: string  
+Default: 8090  
 *required*
 
 `user`  
 The user for Scollector to authenticate with  
-Type: string
-Default: undef
+Type: string  
+Default: undef  
 *optional*
 
 `password`  
 The password for authentication  
-Type: string
-Default: undef
+Type: string  
+Default: undef  
 *optional*
 
 `external_collectors`  
 Whether or not external collectors are going to be used   
-Type: boolean
-Default: false
+Type: boolean  
+Default: false  
 *required*
 
 `freq`  
 The frequency in seconds to send metrics  
-Type: integer
-Default: 60
+Type: integer  
+Default: 60  
 *required*
 
 `freq_dir`  
 The directory to deploy external collectors to in relation to frequency  
-Type: array
-Default: undef
+Type: array  
+Default: undef  
 *optional*
 
 `full_host`  
 Whether or not to use the full hostname when sending metrics  
-Type: boolean
-Default: false
+Type: boolean  
+Default: false  
 *required*
 
 `proto`  
 The protocol to connect to the host with  
-Type: string
-Default: https
+Type: string  
+Default: https  
 *required*
 
 `collector`  
 The native collector to use with valid inputs  
-Type: hash
-Default: undef
+Type: hash  
+Default: undef  
 *optional*
 
 `tag_override`  
 What tags to override in the scollector.toml file  
-Type: hash
-Default: undef
+Type: hash  
+Default: undef  
 *optional*
+
+`real_arch`  
+Normalizing the actual architecture of the system to meet Scollector conventions  
+Type: string  
+Default: If statement based on Facts
+
+`os`  
+The operating system to match the SCollector binary name  
+Type: string
+Default: Based on kernel Fact
+
+`ext`  
+The extension of the Scollector binary  
+Type: string  
+Default: Based on kernel Fact
+
+`install_path`  
+Where to place the binary package  
+Type: string  
+Default: Based on operating system Fact
+
+`config_path`  
+Where to place the configuration file  
+Type: string  
+Default: Based on operating system Fact
+
+`collector_dir`  
+Where to look for external collectors  
+Type: string
+Default: Based on operating system Fact
+
+`collector_freq_dir`  
+The directories used to run external collectors on schedule  
+Type: string  
+Default: Based on value of other parameters (collector_dir & freq_dir)
+
+`binary`  
+The full name of the Scollector binary  
+Type: string  
+Default: Based on other parameters (os, real_arch, & ext)
+
+`download_url`  
+The location to download the Scollector binary from  
+Type: string  
+Default: GitHub project repository
+
+`klass`  
+The subclass to contain for os specific configuration  
+Type: string  
+Default: based on osfamily Fact
 
 ## Limitations
 
 * Only written for RHEL 6/7 and Windows 2008R2/2012R2
 * Only supports x86_64 and x64 bit architecture
+* Process and HTTPUnit native collector support only
 
 ## Development
 

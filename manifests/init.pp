@@ -63,6 +63,46 @@
 #  What tags to override in the scollector.toml file.
 #  Type: hash
 #
+# [*real_arch*]
+#  Normalizing the actual architecture of the system to meet Scollector conventions
+#  Type: string
+#
+# [*os*]
+#  The operating system to match the SCollector binary name
+#  Type: string
+#
+# [*ext*]
+#  The extension of the Scollector binary
+#  Type: string
+#
+# [*install_path*]
+#  Where to place the binary package
+#  Type: string
+#
+# [*config_path*]
+#  Where to place the configuration file
+#  Type: string
+#
+# [*collector_dir*]
+#  Where to look for external collectors
+#  Type: string
+#
+# [*collector_freq_dir*]
+#  The directories used to run external collectors on schedule
+#  Type: string
+#
+# [*binary*]
+#  The full name of the Scollector binary
+#  Type: string
+#
+# [*download_url*]
+#  The location to download the Scollector binary from
+#  Type: string
+#
+# [*klass*]
+#  The subclass to contain for the os specific configurations
+#  Type: string
+#
 # Examples
 # --------
 #
@@ -95,88 +135,50 @@
 # Copyright 2016
 #
 class scollector (
-  $use_hiera           = false,
-  $version             = undef,
-  $host                = undef,
-  $port                = '8090',
-  $user                = undef,
-  $password            = undef,
-  $external_collectors = false,
-  $freq                = 60,
-  $freq_dir            = [],
-  $full_host           = undef,
-  $proto               = 'https',
-  $collector           = {},
-  $tag_override        = {},
-) {
+  Boolean $use_hiera           = $::scollector::params::use_hiera,
+  Boolean $external_collectors = $::scollector::params::external_collectors,
+  Boolean $full_host           = $::scollector::params::full_host,
 
-  validate_re($version, '^\d+\.\d+\.\d+$')
-  validate_re($port, '(^\d{4}$)')
-  validate_re($proto, ['^http$', '^https$'], 'Valid protocols are http or https')
-  validate_integer($freq)
-  validate_array($freq_dir)
-  validate_hash($collector,
-                $tag_override)
-  validate_bool($full_host,
-                $external_collectors,
-                $use_hiera)
-  validate_string($host,
-                  $user,
-                  $password)
+  Pattern[/^\d+\.\d+\.\d+$/] $version = $::scollector::params::version,
+  Pattern[/^http$|^https$/] $proto    = $::scollector::params::proto,
+  Pattern[/^\d{4}$/] $port            = $::scollector::params::port,
+  Pattern[/^amd64$/] $real_arch       = $::scollector::params::real_arch,
 
-  if $user == undef and $password != undef {
-    fail("every user needs a password")
-  }
+  String $host     = $::scollector::params::host,
+  String $user     = $::scollector::params::user,
+  String $password = $::scollector::params::password,
+  String $os       = $::scollector::params::os,
 
-  if $user != undef and $password == undef {
-    fail("every password needs a user")
-  }
+  Integer $freq = $::scollector::params::freq,
 
-  if $external_collectors == true and $freq_dir == [] {
-    fail("if you are using external collectors you need frequency directories")
-  }
+  Array $freq_dir           = $::scollector::params::freq_dir,
+  Array $collector_freq_dir = $::scollector::params::collector_freq_dir,
 
-  if $enternal_collectors == false and $freq_dir != [] {
-    fail("you must enable external collectors to create frequency directories")
-  }
+  Hash $collector    = $::scollector::params::collector,
+  Hash $tag_override = $::scollector::params::tag_override,
 
-  if ('64' in $::architecture) {
-    $real_arch   = 'amd64'
-  } else {
-    fail("${::architecture} is not a supported architecture")
-  }
+  Stdlib::Absolutepath $install_path  = $::scollector::params::install_path,
+  Stdlib::Absolutepath $config_path   = $::scollector::params::config_path,
+  Stdlib::Absolutepath $collector_dir = $::scollector::params::collector_dir,
 
-  case downcase($::kernel) {
-    'linux': {
-      $os            = 'linux'
-      $ext           = undef
-      $install_path  = '/usr/local/scollector'
-      $config_path   = '/etc/scollector'
-      $collector_dir = "${config_path}/collectors"
-    }
-    'windows': {
-      $os            = 'windows'
-      $ext           = '.exe'
-      $install_path  = 'C:/Program Files/scollector'
-      $config_path   = $install_path
-      $collector_dir = "${install_path}/collectors"
-    }
-    default: {
-      fail("${::kernel} is not a supported kernel")
-    }
-  }
+  Stdlib::Httpsurl $download_url = $::scollector::params::download_url,
 
-  if $external_collectors == true {
-    $collector_freq_dir = prefix($freq_dir, "${collector_dir}/")
-  }
+  $ext    = $::scollector::params::ext,
+  $binary = $::scollector::params::binary,
+  $klass  = $::scollector::params::klass
+) inherits ::scollector::params {
 
-  $binary             = "scollector-${os}-${real_arch}${ext}"
-  $download_url       = "https://github.com/bosun-monitor/bosun/releases/download/${version}/${binary}"
-  $klass              = downcase($::osfamily)
+   if $external_collectors and $freq_dir.count < 1 {
+     fail("if you are using external collectors you need frequency directories")
+   }
 
-  if !defined("::scollector::${klass}") {
-    fail("no class for ${::osfamily}")
-  }
+   if $external_collectors == false and $freq_dir.count > 0 {
+     fail("you must enable external collectors to create frequency directories")
+   }
+
+   if !defined("::scollector::${klass}") {
+     fail("no class for ${::osfamily}")
+   }
 
   case $use_hiera {
     true: {

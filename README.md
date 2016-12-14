@@ -106,79 +106,80 @@ scollector::custom_collector:
 
 `use_hiera`  
 If Hiera data should be used to create external collectors  
-Type: boolean
+Type: boolean  
+Default: false  
 *required*
 
 `version`  
 The version of Scollector to install on the node  
-Type: string
-Default: false
+Type: string  
+Default: undef  
 *required*
 
 `host`  
 The host to have Scollector send metrics to  
-Type: string
-Default: undef
+Type: string  
+Default: undef  
 *required*
 
 `port`  
 The port for Scollector to use to connect to the host  
-Type: string
-Default: 8090
+Type: string  
+Default: 8090  
 *required*
 
 `user`  
 The user for Scollector to authenticate with  
-Type: string
-Default: undef
+Type: string  
+Default: undef  
 *optional*
 
 `password`  
 The password for authentication  
-Type: string
-Default: undef
+Type: string  
+Default: undef  
 *optional*
 
 `external_collectors`  
 Whether or not external collectors are going to be used   
-Type: boolean
-Default: false
+Type: boolean  
+Default: false  
 *required*
 
 `freq`  
 The frequency in seconds to send metrics  
-Type: integer
-Default: 60
+Type: integer  
+Default: 60  
 *required*
 
 `freq_dir`  
 The directory to deploy external collectors to in relation to frequency  
-Type: array
-Default: undef
+Type: array  
+Default: undef  
 *optional*
 
 `full_host`  
 Whether or not to use the full hostname when sending metrics  
-Type: boolean
-Default: false
+Type: boolean  
+Default: false  
 *required*
 
 `proto`  
 The protocol to connect to the host with  
-Type: string
-Default: https
+Type: string  
+Default: https  
 *required*
 
 `collector`  
 The native collector to use with valid inputs  
-Type: hash
-Default: undef
+Type: hash  
+Default: undef  
 *optional*
 
 `tag_override`  
 What tags to override in the scollector.toml file  
-Type: hash
-Default: undef
+Type: hash  
+Default: undef  
 *optional*
 
 ## Limitations

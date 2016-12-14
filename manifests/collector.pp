@@ -17,7 +17,9 @@
 define scollector::collector (
   $ensure = present,
   $freq   = undef,
-){
+) {
+
+  include '::scollector'
 
   validate_re($ensure, '^(present)|(absent)$')
   validate_string($freq)
@@ -25,12 +27,14 @@ define scollector::collector (
   unless $freq in $::scollector::freq_dir {
     fail('frequency is not valid')
   }
-  $collector_os    = downcase($::osfamily)
-  $collector_path  = "${::scollector::collector_dir}/${freq}"
-  $collector_source = "collectors/${collector_os}"
+
+  $collector_path = "${::scollector::collector_dir}/${freq}"
 
   case $ensure {
     'present': {
+      $collector_os = downcase($::osfamily)
+      $collector_source = "collectors/${collector_os}"
+
       if $::osfamily != 'windows' {
         file { "collector-${name}":
           ensure  => file,

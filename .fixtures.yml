@@ -1,0 +1,16 @@
+---
+fixtures:
+  symlinks:
+    scollector: "#{source_dir}"
+  repositories:
+    stdlib:
+      scm: git
+      repo: "https://github.com/puppetlabs/puppetlabs-stdlib.git"
+      ref: "4.13.1"
+    wget:
+      scm: git
+      repo: "https://github.com/maestrodev/puppet-wget"
+      ref: "v1.7.3"
+    pget:
+      scm: git
+      repo: "https://github.com/cyberious/puppet-pget"

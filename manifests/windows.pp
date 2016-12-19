@@ -5,7 +5,6 @@
 #
 class scollector::windows inherits scollector {
 
-
   file {
     'install-dir':
       ensure => directory,

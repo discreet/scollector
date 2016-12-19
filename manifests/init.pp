@@ -95,20 +95,30 @@
 # Copyright 2016
 #
 class scollector (
-  $use_hiera           = false,
-  $version             = undef,
-  $host                = undef,
-  $port                = '8090',
-  $user                = undef,
-  $password            = undef,
-  $external_collectors = false,
-  $freq                = 60,
-  $freq_dir            = [],
-  $full_host           = undef,
-  $proto               = 'https',
-  $collector           = {},
-  $tag_override        = {},
-) {
+  $use_hiera           = $::scollector::params::use_hiera,
+  $version             = $::scollector::params::version,
+  $host                = $::scollector::params::host,
+  $port                = $::scollector::params::port,
+  $user                = $::scollector::params::user,
+  $password            = $::scollector::params::password,
+  $external_collectors = $::scollector::params::external_collectors,
+  $freq                = $::scollector::params::freq,
+  $freq_dir            = $::scollector::params::freq_dir,
+  $full_host           = $::scollector::params::full_host,
+  $proto               = $::scollector::params::proto,
+  $collector           = $::scollector::params::collector,
+  $tag_override        = $::scollector::params::tag_override,
+  $real_arch           = $::scollector::params::real_arch,
+  $os                  = $::scollector::params::os,
+  $ext                 = $::scollector::params::ext,
+  $install_path        = $::scollector::params::install_path,
+  $config_path         = $::scollector::params::config_path,
+  $collector_dir       = $::scollector::params::collector_dir,
+  $collector_freq_dir  = $::scollector::params::collector_freq_dir,
+  $binary              = $::scollector::params::binary,
+  $download_url        = $::scollector::params::download_url,
+  $klass               = $::scollector::params::klass
+) inherits ::scollector::params {
 
   validate_re($version, '^\d+\.\d+\.\d+$')
   validate_re($port, '(^\d{4}$)')
@@ -136,43 +146,9 @@ class scollector (
     fail("if you are using external collectors you need frequency directories")
   }
 
-  if $enternal_collectors == false and $freq_dir != [] {
+  if $external_collectors == false and $freq_dir != [] {
     fail("you must enable external collectors to create frequency directories")
   }
-
-  if ('64' in $::architecture) {
-    $real_arch   = 'amd64'
-  } else {
-    fail("${::architecture} is not a supported architecture")
-  }
-
-  case downcase($::kernel) {
-    'linux': {
-      $os            = 'linux'
-      $ext           = undef
-      $install_path  = '/usr/local/scollector'
-      $config_path   = '/etc/scollector'
-      $collector_dir = "${config_path}/collectors"
-    }
-    'windows': {
-      $os            = 'windows'
-      $ext           = '.exe'
-      $install_path  = 'C:/Program Files/scollector'
-      $config_path   = $install_path
-      $collector_dir = "${install_path}/collectors"
-    }
-    default: {
-      fail("${::kernel} is not a supported kernel")
-    }
-  }
-
-  if $external_collectors == true {
-    $collector_freq_dir = prefix($freq_dir, "${collector_dir}/")
-  }
-
-  $binary             = "scollector-${os}-${real_arch}${ext}"
-  $download_url       = "https://github.com/bosun-monitor/bosun/releases/download/${version}/${binary}"
-  $klass              = downcase($::osfamily)
 
   if !defined("::scollector::${klass}") {
     fail("no class for ${::osfamily}")

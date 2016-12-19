@@ -184,10 +184,61 @@ Type: hash
 Default: undef  
 *optional*
 
+`real_arch`  
+Normalizing the actual architecture of the system to meet Scollector conventions  
+Type: string  
+Default: If statement based on Facts
+
+`os`  
+The operating system to match the SCollector binary name  
+Type: string
+Default: Based on kernel Fact
+
+`ext`  
+The extension of the Scollector binary  
+Type: string  
+Default: Based on kernel Fact
+
+`install_path`  
+Where to place the binary package  
+Type: string  
+Default: Based on operating system Fact
+
+`config_path`  
+Where to place the configuration file  
+Type: string  
+Default: Based on operating system Fact
+
+`collector_dir`  
+Where to look for external collectors  
+Type: string
+Default: Based on operating system Fact
+
+`collector_freq_dir`  
+The directories used to run external collectors on schedule  
+Type: string  
+Default: Based on value of other parameters (collector_dir & freq_dir)
+
+`binary`  
+The full name of the Scollector binary  
+Type: string  
+Default: Based on other parameters (os, real_arch, & ext)
+
+`download_url`  
+The location to download the Scollector binary from  
+Type: string  
+Default: GitHub project repository
+
+`klass`  
+The subclass to contain for os specific configuration  
+Type: string  
+Default: based on osfamily Fact
+
 ## Limitations
 
 * Only written for RHEL 6/7 and Windows 2008R2/2012R2
 * Only supports x86_64 and x64 bit architecture
+* Process and HTTPUnit native collector support only
 
 ## Development
 

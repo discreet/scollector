@@ -63,6 +63,46 @@
 #  What tags to override in the scollector.toml file.
 #  Type: hash
 #
+# [*real_arch*]
+#  Normalizing the actual architecture of the system to meet Scollector conventions
+#  Type: string
+#
+# [*os*]
+#  The operating system to match the SCollector binary name
+#  Type: string
+#
+# [*ext*]
+#  The extension of the Scollector binary
+#  Type: string
+#
+# [*install_path*]
+#  Where to place the binary package
+#  Type: string
+#
+# [*config_path*]
+#  Where to place the configuration file
+#  Type: string
+#
+# [*collector_dir*]
+#  Where to look for external collectors
+#  Type: string
+#
+# [*collector_freq_dir*]
+#  The directories used to run external collectors on schedule
+#  Type: string
+#
+# [*binary*]
+#  The full name of the Scollector binary
+#  Type: string
+#
+# [*download_url*]
+#  The location to download the Scollector binary from
+#  Type: string
+#
+# [*klass*]
+#  The subclass to contain for the os specific configurations
+#  Type: string
+#
 # Examples
 # --------
 #

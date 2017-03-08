@@ -5,30 +5,50 @@
 #
 class scollector::windows inherits scollector {
 
-  file {
-    'install-dir':
-      ensure => directory,
-      path   => $::scollector::install_path;
+  $type = "file"
 
-    'collector-dir':
-      ensure  => directory,
-      path    => "${::scollector::collector_dir}",
-      require => File['install-dir'];
-
-     'scollector-config':
-      ensure  => file,
-      path    => "${::scollector::config_path}/scollector.toml",
-      content => template('scollector/windows.toml.erb'),
-      notify  => Service['scollector'],
-      require => File['install-dir'];
+  $dir_defaults = {
+    ensure => directory
   }
 
-  if $::scollector::external_collectors == true {
+  $file_defaults = {
+    ensure => file
+  }
+
+  $directories = {
+    'install-dir' => {
+      path   => $::scollector::install_path
+    },
+    'collector-dir' => {
+      path    => "${::scollector::collector_dir}"
+    }
+  }
+
+  $files = {
+    'scollector-config' => {
+      path    => "${::scollector::config_path}/scollector.toml",
+      content => template('scollector/windows.toml.erb'),
+    }
+  }
+
+  $directories.each |String $directory, Hash $attributes| {
+    Resource[$type] {
+      $directory: * => $attributes;
+      default: * => $dir_defaults;
+    }
+  }
+
+  $files.each |String $file, Hash $attributes| {
+    Resource[$type] {
+      $file: * => $attributes;
+      default: * => $file_defaults;
+    }
+  }
+
+  if $::scollector::external_collectors {
     file { $::scollector::collector_freq_dir:
       ensure  => directory,
-      mode    => '0755',
       purge   => true,
-      require => File['collector-dir'],
     }
   }
 
@@ -50,6 +70,6 @@ class scollector::windows inherits scollector {
     enable     => true,
     hasstatus  => true,
     hasrestart => true,
-    require    => Exec['register-service'],
+    subscribe  => File['scollector-config'],
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "discr33t-scollector",
+  "name": "discreet-scollector",
   "version": "0.1.0",
   "author": "discr33t",
   "summary": "This module installs and manages the SCollector agent for Bosun",
@@ -41,11 +41,11 @@
   "requirements": [
     {
       "name": "pe",
-      "version_requirement": ">= 3.7.0 < 2015.4.0"
+      "version_requirement": ">= 4.0.0 < 2015.4.0"
     },
     {
       "name": "puppet",
-      "version_requirement": ">= 3.7.0 < 2015.4.0"
+      "version_requirement": ">= 4.0.0 < 2015.4.0"
     }
   ]
 }

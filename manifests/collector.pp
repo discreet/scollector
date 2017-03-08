@@ -15,14 +15,11 @@
 #  Type: string
 #
 define scollector::collector (
-  $ensure = present,
-  $freq   = undef,
+  Pattern[/^present$|^absent$/] $ensure = present,
+  String $freq = '',
 ) {
 
   include '::scollector'
-
-  validate_re($ensure, '^(present)|(absent)$')
-  validate_string($freq)
 
   unless $freq in $::scollector::freq_dir {
     fail('frequency is not valid')

@@ -15,73 +15,78 @@ class scollector::redhat inherits scollector {
     /^7/ => '/etc/systemd/system',
   }
 
+  $type = "file"
+
+  $dir_defaults = {
+    ensure => directory,
+    owner => root,
+    group => root,
+    mode  => '0755',
+    purge => true
+  }
+
+  $file_defaults = {
+    ensure => file,
+    owner  => root,
+    group  => root
+  }
+
+  $directories = {
+    'install-dir' => {
+      path => $::scollector::install_path
+    },
+    'config-dir' => {
+      path => $::scollector::config_path
+    },
+    'collector-dir' => {
+      path    => $::scollector::collector_dir,
+    }
+  }
+  $files = {
+    'scollector-binary' => {
+      path    => "${::scollector::install_path}/scollector",
+      mode    => '0755',
+    },
+    'scollector-config' => {
+      path    => "${::scollector::config_path}/scollector.toml",
+      mode    => '0644',
+      content => template('scollector/redhat.toml.erb'),
+    },
+    'scollector-init' => {
+      path   => "${init_path}/${init_file}",
+      mode   => '0755',
+      source => "puppet:///modules/scollector/init_scripts/${init_file}"
+    }
+  }
+
+
   wget::fetch { 'download-scollector':
     source      => $::scollector::download_url,
     destination => "${::scollector::install_path}/scollector",
     require     => File['install-dir'],
   }
 
-  file {
-    'install-dir':
-      ensure => directory,
-      path   => $::scollector::install_path,
-      owner  => root,
-      group  => root,
-      mode   => '0755',
-      purge  => true;
-
-    'scollector-binary':
-      ensure  => file,
-      path    => "${::scollector::install_path}/scollector",
-      owner   => root,
-      group   => root,
-      mode    => '0755',
-      require => Wget::Fetch['download-scollector'];
-
-    'config-dir':
-      ensure => directory,
-      path   => $::scollector::config_path,
-      owner  => root,
-      group  => root,
-      mode   => '0755',
-      purge  => true;
-
-    'collector-dir':
-      ensure  => directory,
-      path    => "${::scollector::collector_dir}",
-      owner   => root,
-      group   => root,
-      mode    => '0755',
-      purge   => true,
-      require => File['config-dir'];
-
-    'scollector-config':
-      ensure  => file,
-      path    => "${::scollector::config_path}/scollector.toml",
-      owner   => root,
-      group   => root,
-      mode    => '0644',
-      content => template('scollector/redhat.toml.erb'),
-      notify  => Service['scollector'],
-      require => File['install-dir'];
-
-    'scollector-init':
-      ensure => file,
-      path   => "${init_path}/${init_file}",
-      owner  => root,
-      group  => root,
-      mode   => '0755',
-      source => "puppet:///modules/scollector/init_scripts/${init_file}";
+  $directories.each |String $directory, Hash $attributes| {
+    Resource[$type] {
+      $directory: * => $attributes;
+      default: * => $dir_defaults;
+    }
   }
 
-  if $::scollector::external_collectors == true {
+  $files.each |String $file, Hash $attributes| {
+    Resource[$type] {
+      $file: * => $attributes;
+      default: * => $file_defaults;
+    }
+  }
+
+  if $::scollector::external_collectors {
     file { $::scollector::collector_freq_dir:
       ensure  => directory,
       owner   => root,
       group   => root,
       mode    => '0755',
       purge   => true,
-      require => File['collector-dir'],
     }
   }
 
@@ -92,9 +97,7 @@ class scollector::redhat inherits scollector {
     hasstatus  => true,
     subscribe  => [ File['scollector-init'],
                     File['scollector-binary'],
-                  ],
-    require    => [ File['scollector-binary'],
-                    File['scollector-init'],
+                    File['scollector-config']
                   ],
   }
 }

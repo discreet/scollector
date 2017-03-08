@@ -6,10 +6,10 @@
 class scollector::params {
   $use_hiera           = false
   $version             = '0.5.0'
-  $host                = undef
+  $host                = ''
   $port                = '8090'
-  $user                = undef
-  $password            = undef
+  $user                = ''
+  $password            = ''
   $external_collectors = false
   $freq                = 60
   $freq_dir            = []
@@ -41,7 +41,7 @@ class scollector::params {
   if $external_collectors == true {
     $collector_freq_dir = prefix($freq_dir, "${collector_dir}/")
   }else {
-    $collector_freq_dir = undef
+    $collector_freq_dir = []
   }
 
   if ('64' in $::architecture) {

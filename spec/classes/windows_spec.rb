@@ -23,11 +23,11 @@ describe 'scollector::windows' do
         'ensure' => 'directory',
       )
 
-      is_expected.to contain_file('collector-dir').that_requires('File[install-dir]').with(
+      is_expected.to contain_file('collector-dir').with(
         'ensure' => 'directory',
       )
 
-      is_expected.to contain_file('scollector-config').that_requires('File[install-dir]').that_notifies('Service[scollector]').with(
+      is_expected.to contain_file('scollector-config').with(
         'ensure' => 'file',
       )
 
@@ -43,7 +43,7 @@ describe 'scollector::windows' do
         'refreshonly' => true,
       )
 
-      is_expected.to contain_service('scollector').that_requires('Exec[register-service]').with(
+      is_expected.to contain_service('scollector').that_subscribes_to('File[scollector-config]').with(
         'ensure'     => 'running',
         'enable'     => true,
         'hasstatus'  => true,
@@ -68,11 +68,11 @@ describe 'scollector::windows' do
         'ensure' => 'directory',
       )
 
-      is_expected.to contain_file('collector-dir').that_requires('File[install-dir]').with(
+      is_expected.to contain_file('collector-dir').with(
         'ensure' => 'directory',
       )
 
-      is_expected.to contain_file('scollector-config').that_requires('File[install-dir]').that_notifies('Service[scollector]').with(
+      is_expected.to contain_file('scollector-config').with(
         'ensure' => 'file',
       )
 
@@ -88,7 +88,7 @@ describe 'scollector::windows' do
         'refreshonly' => true,
       )
 
-      is_expected.to contain_service('scollector').that_requires('Exec[register-service]').with(
+      is_expected.to contain_service('scollector').that_subscribes_to('File[scollector-config]').with(
         'ensure'     => 'running',
         'enable'     => true,
         'hasstatus'  => true,
@@ -118,15 +118,12 @@ describe 'scollector::windows' do
 		    :operatingsystemmajrelease => '2012 R2',
 		    :operatingsystem => 'windows' } }
     it do
-      is_expected.to contain_file('C:/Program Files/scollector/collectors/30').that_requires('File[collector-dir]').with(
+      is_expected.to contain_file('C:/Program Files/scollector/collectors/30').with(
         'ensure' => 'directory',
-	'mode'   => '0755',
 	'purge'  => true,
       )
 
-      is_expected.to contain_file('C:/Program Files/scollector/collectors/60').that_requires('File[collector-dir]').with(
-        'ensure' => 'directory',
-	'mode'   => '0755',
+      is_expected.to contain_file('C:/Program Files/scollector/collectors/60').with(
 	'purge'  => true,
       )
     end

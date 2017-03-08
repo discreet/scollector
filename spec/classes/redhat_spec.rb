@@ -28,7 +28,7 @@ describe 'scollector::redhat' do
 	'purge'  => true,
       )
 
-      is_expected.to contain_file('scollector-binary').that_requires('Wget::Fetch[download-scollector]').with(
+      is_expected.to contain_file('scollector-binary').with(
         'ensure' => 'file',
 	'path'   => '/usr/local/scollector/scollector',
 	'owner'  => 'root',
@@ -45,7 +45,7 @@ describe 'scollector::redhat' do
 	'purge'  => true,
       )
 
-      is_expected.to contain_file('collector-dir').that_requires('File[config-dir]').with(
+      is_expected.to contain_file('collector-dir').with(
         'ensure' => 'directory',
 	'path'   => '/etc/scollector/collectors',
 	'owner'  => 'root',
@@ -54,7 +54,7 @@ describe 'scollector::redhat' do
 	'purge'  => true,
       )
 
-      is_expected.to contain_file('scollector-config').that_requires('File[install-dir]').that_notifies('Service[scollector]').with(
+      is_expected.to contain_file('scollector-config').with(
         'ensure'  => 'file',
 	'path'    => '/etc/scollector/scollector.toml',
 	'owner'   => 'root',
@@ -80,7 +80,7 @@ describe 'scollector::redhat' do
                     :operatingsystemmajrelease => '6',
                     :operatingsystem => 'CentOS' } }
     it do
-      is_expected.to contain_service('scollector').that_requires('File[scollector-binary]').that_requires('File[scollector-init]').that_subscribes_to('File[scollector-init]').that_subscribes_to('File[scollector-binary]').with(
+      is_expected.to contain_service('scollector').that_subscribes_to('File[scollector-init]').that_subscribes_to('File[scollector-binary]').that_subscribes_to('File[scollector-config]').with(
         'ensure'     => 'running',
 	'enable'     => true,
 	'hasrestart' => true,
@@ -97,7 +97,7 @@ describe 'scollector::redhat' do
 		    :operatingsystem => 'CentOS' } }
 
     it do
-      is_expected.to contain_service('scollector').that_requires('File[scollector-binary]').that_requires('File[scollector-init]').that_subscribes_to('File[scollector-init]').that_subscribes_to('File[scollector-binary]').with(
+      is_expected.to contain_service('scollector').that_subscribes_to('File[scollector-init]').that_subscribes_to('File[scollector-binary]').that_subscribes_to('File[scollector-config]').with(
         'ensure'     => 'running',
         'enable'     => true,
         'hasrestart' => true,
@@ -121,7 +121,7 @@ describe 'scollector::redhat' do
 		   :operatingsystemmajrelease => '7',
 		   :operatingsystem => 'CentOS' } }
     it do
-      is_expected.to contain_file('/etc/scollector/collectors/30').that_requires('File[collector-dir]').with(
+      is_expected.to contain_file('/etc/scollector/collectors/30').with(
         'ensure' => 'directory',
 	'owner'  => 'root',
 	'group'  => 'root',
@@ -129,7 +129,7 @@ describe 'scollector::redhat' do
 	'purge'  => true,
       )
 
-      is_expected.to contain_file('/etc/scollector/collectors/60').that_requires('File[collector-dir]').with(
+      is_expected.to contain_file('/etc/scollector/collectors/60').with(
         'ensure' => 'directory',
 	'owner'  => 'root',
 	'group'  => 'root',

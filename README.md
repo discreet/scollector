@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/discreet/scollector.svg?branch=master)](https://travis-ci.org/discreet/scollector)
+[![Build Status](https://travis-ci.org/discreet/scollector.svg?branch=puppet-4)](https://travis-ci.org/discreet/scollector)
 
 # scollector
 

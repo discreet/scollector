@@ -1,3 +1,7 @@
+**0.2.0**
+* Refactor with a few Puppet 4 features
+* No longer supports Puppet 3.x
+
 **0.1.0**
 * Installation for Windows and Linux
 * Custom Fact for installed version

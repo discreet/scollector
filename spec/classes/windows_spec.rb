@@ -124,7 +124,6 @@ describe 'scollector::windows' do
       )
 
       is_expected.to contain_file('C:/Program Files/scollector/collectors/60').with(
-        'ensure' => 'directory',
 	'purge'  => true,
       )
     end

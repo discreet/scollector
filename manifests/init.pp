@@ -138,7 +138,7 @@ class scollector (
   Boolean $use_hiera           = $::scollector::params::use_hiera,
   Boolean $external_collectors = $::scollector::params::external_collectors,
   Boolean $full_host           = $::scollector::params::full_host,
-
+  
   Pattern[/^\d+\.\d+\.\d+$/] $version = $::scollector::params::version,
   Pattern[/^http$|^https$/] $proto    = $::scollector::params::proto,
   Pattern[/^\d{4}$/] $port            = $::scollector::params::port,
@@ -179,6 +179,14 @@ class scollector (
    if !defined("::scollector::${klass}") {
      fail("no class for ${::osfamily}")
    }
+
+  if $external_collectors == false and $freq_dir != [] {
+    fail("you must enable external collectors to create frequency directories")
+  }
+
+  if !defined("::scollector::${klass}") {
+    fail("no class for ${::osfamily}")
+  }
 
   case $use_hiera {
     true: {

@@ -5,10 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this
 project adhears to [Sematic Versioning](http://semver.org/).
 
 ## [Unreleased]
-## Modified
+### Modified
 - Updated CHANGELOG format
 
-## Added
+### Added
 
 
 ## [0.2.0] -- 2017-03-10

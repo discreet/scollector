@@ -243,7 +243,7 @@ Default: based on osfamily Fact
 ## Development
 
 1. Fork the project
-2. Create your feature and fully test it
+2. Create your feature
 3. Write your tests
 4. Squash your commits
 5. Submit a pull request to the upstream
